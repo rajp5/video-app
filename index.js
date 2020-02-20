@@ -22,8 +22,32 @@ app.post('/api/genres', (req,res) => {
     res.send(newGenre);
 });
 
-app.get('/api/genre/:id', (req,res) => {
-    
+app.get('/api/genres/:id', (req,res) => {
+    let genre = genres.find(g => g.id === parseInt(req.params.id));
+    if(!genre) return res.status(404).send('Genre Not Found');
+
+    res.send(genre);
+});
+
+app.put('/api/genres/:id', (req,res)=>{
+    let genre = genres.find(g => g.id === parseInt(req.params.id));
+    if(!genre) return res.status(404).send('Genre Not Found');
+
+    let result = validateGenre(req.body);
+    if(result.error) return res.status(400).send('Invalid Genre');
+
+    genre.name = req.body.name;
+    res.send(genre);
+});
+
+app.delete('/api/genres/:id', (req,res)=>{
+    let genre = genres.find(g => g.id === parseInt(req.params.id));
+    if(!genre) return res.status(404).send('Genre Not Found');
+
+    let index = genres.indexOf(genre)
+    genres.splice(index,1);
+
+    res.send(genre);
 })
 
 function validateGenre(genre){
